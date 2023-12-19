@@ -1,0 +1,5 @@
+entity.bunny_stream_library.overview:
+  title: Bunny stream libraries
+  parent: system.admin_structure
+  description: 'List of Bunny stream libraries to extend site functionality.'
+  route_name: entity.bunny_stream_library.collection

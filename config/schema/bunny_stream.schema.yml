@@ -1,0 +1,33 @@
+bunny_stream.bunny_stream_library.*:
+  type: config_entity
+  label: Bunny Stream Library
+  mapping:
+    id:
+      type: string
+      label: Library ID
+    uuid:
+      type: string
+    label:
+      type: label
+      label: Label
+    description:
+      type: string
+    api_key:
+      type: string
+      label: Api Key
+    cdn_hostname:
+      type: string
+      label: CDN Hostname
+    pull_zone:
+      type: string
+      label: Pull Zone
+    token_authentication_key:
+      type: string
+      label: Token Authentication Key
+    time:
+      type: int
+      label: Time
+
+field.formatter.settings.bunny_stream_bunny_stream:
+  type: mapping
+  label: Bunny Stream formatter settings

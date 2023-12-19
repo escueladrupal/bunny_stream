@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function bunny_stream_theme($existing, $type, $theme, $path) {
+
+  return [
+    'bunny_embed' => [
+      'variables' => [
+        'url' => NULL,
+      ],
+    ],
+  ];
+
+}
