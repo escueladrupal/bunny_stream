@@ -79,7 +79,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
         'preload' => 1,
         'loop' => 0,
         'muted' => 0,
-        'allow_fullscreen' => 1,
+        'allowfullscreen' => 1,
       ] + parent::defaultSettings();
   }
 
@@ -233,7 +233,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
             '\Drupal\bunny_stream\LazyEmbedLoader::lazyLoad',
             [
               $url->toString(),
-              (bool) $this->getSetting('allowfullscreen'),
+              $this->getSetting('allow_fullscreen'),
             ]
           ],
           '#create_placeholder' => TRUE,
@@ -248,7 +248,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
         $render = [
           '#theme' => "bunny_embed",
           '#url' => $url->toString(),
-          '#options' => ['allowfullscreen' => $this->getSetting('allowfullscreen')],
+          '#options' => ['allowfullscreen' => $this->getSetting('allow_fullscreen')],
         ];
       }
 
