@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\media\Entity\MediaType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -71,10 +72,107 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+        'responsive' => 1,
+        'autoplay' => 0,
+        'preload' => 1,
+        'loop' => 0,
+        'muted' => 0,
+        'allow_fullscreen' => 1,
+      ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $form = parent::settingsForm($form, $form_state);
+
+    $form['responsive'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Responsive'),
+      '#default_value' => $this->getSetting('responsive'),
+      '#description' => $this->t('Allow video to be responsive.'),
+    ];
+
+    $form['autoplay'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Autoplay'),
+      '#default_value' => $this->getSetting('autoplay'),
+      '#description' => $this->t('Enable autoplay of the video.'),
+    ];
+
+    $form['preload'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Preload'),
+      '#default_value' => $this->getSetting('preload'),
+      '#description' => $this->t('Preload the video to play it faster.'),
+    ];
+
+    $form['loop'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Loop'),
+      '#default_value' => $this->getSetting('loop'),
+      '#description' => $this->t('Enable loop of the video.'),
+    ];
+
+    $form['muted'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Muted'),
+      '#default_value' => $this->getSetting('muted'),
+      '#description' => $this->t('Mute the video.'),
+    ];
+
+    $form['allow_fullscreen'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Allow Fullscreen'),
+      '#default_value' => $this->getSetting('allow_fullscreen'),
+      '#description' => $this->t('Allow video to be fullscreen.'),
+    ];
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = parent::settingsSummary();
+
+    $summary[] = $this->t('Responsive: @enabled', [
+      '@enabled' => $this->getSetting('responsive') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    $summary[] = $this->t('Autoplay: @enabled', [
+      '@enabled' => $this->getSetting('autoplay') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    $summary[] = $this->t('Preload: @enabled', [
+      '@enabled' => $this->getSetting('preload') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    $summary[] = $this->t('Loop: @enabled', [
+      '@enabled' => $this->getSetting('loop') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    $summary[] = $this->t('Muted: @enabled', [
+      '@enabled' => $this->getSetting('muted') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    $summary[] = $this->t('Allow fullscreen: @enabled', [
+      '@enabled' => $this->getSetting('allow_fullscreen') ? $this->t('Enabled') : $this->t('Disabled'),
+    ]);
+
+    return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function viewElements(FieldItemListInterface $items, $langcode): array {
     $element = [];
 
-    // @todo find better way to do this to don't limit this to Media.
     $field_definition = $items->getFieldDefinition();
     $bundle = $field_definition->getTargetBundle();
     /** @var \Drupal\media\Entity\MediaType $media_entity */
@@ -96,17 +194,37 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
 
       $url = Url::fromUri($video_url);
 
-      $render = [
-        '#theme' => "bunny_embed",
-        '#url' => $url->toString(),
-      ];
+      $settings = [];
+      if ($this->getSetting('responsive')) {
+        $settings['responsive'] = 'true';
+      }
+
+      if ($this->getSetting('autoplay')) {
+        $settings['autoplay'] = 'true';
+      }
+
+      if ($this->getSetting('loop')) {
+        $settings['loop'] = 'true';
+      }
+
+      if ($this->getSetting('muted')) {
+        $settings['muted'] = 'true';
+      }
+
+      if ($this->getSetting('preload')) {
+        $settings['preload'] = 'true';
+      }
 
       $token_auth = $library->get('token_authentication_key');
 
       if (!empty($token_auth)) {
         $time = time() + $library->get('time');
         $security_token = hash("sha256",$token_auth . $video_id . $time);
-        $url->setOptions(['query' => ['token' => $security_token, 'expires' => $time]]);
+
+        $settings['token'] = $security_token;
+        $settings['expires'] = $time;
+
+        $url->setOptions(['query' => $settings]);
 
         // We can't cache videos with expiration time, so let's use BigPipe
         // to avoid cache.
@@ -115,6 +233,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
             '\Drupal\bunny_stream\LazyEmbedLoader::lazyLoad',
             [
               $url->toString(),
+              (bool) $this->getSetting('allowfullscreen'),
             ]
           ],
           '#create_placeholder' => TRUE,
@@ -123,6 +242,13 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
             '#type' => 'container',
             '#markup' => 'Loading video...',
           ],
+        ];
+      }
+      else {
+        $render = [
+          '#theme' => "bunny_embed",
+          '#url' => $url->toString(),
+          '#options' => ['allowfullscreen' => $this->getSetting('allowfullscreen')],
         ];
       }
 

@@ -9,6 +9,7 @@ function bunny_stream_theme($existing, $type, $theme, $path) {
     'bunny_embed' => [
       'variables' => [
         'url' => NULL,
+        'options' => [],
       ],
     ],
   ];

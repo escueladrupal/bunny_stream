@@ -3,6 +3,7 @@
 namespace Drupal\bunny_stream;
 
 use Drupal\Core\Security\TrustedCallbackInterface;
+use Drupal\Core\Url;
 
 /**
  * This class is used to enabled BigPipe with videos with expiration time.
@@ -12,16 +13,31 @@ use Drupal\Core\Security\TrustedCallbackInterface;
  */
 class LazyEmbedLoader implements TrustedCallbackInterface {
 
-  public static function lazyLoad(string $url): array {
+  /**
+   * Prepare the render array for the video.
+   *
+   * @param string $url
+   *   Url of the video.
+   * @param bool $fullscreen
+   *   Indicated if video allow fullscreen.
+   *
+   * @return array
+   *   Render array without cache.
+   */
+  public static function lazyLoad(string $url, bool $fullscreen = true): array {
     return [
       '#theme' => "bunny_embed",
       '#url' => $url,
+      '#options' => ['allowfullscreen' => $fullscreen],
       '#cache' => [
         'max-age' => 0
       ]
     ];
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public static function trustedCallbacks() {
     return [
       'lazyLoad',
