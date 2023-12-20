@@ -3,6 +3,7 @@
 namespace Drupal\bunny_stream\Plugin\media\Source;
 
 use Drupal\bunny_stream\BunnyStreamManagerFactoryInterface;
+use Drupal\bunny_stream\BunnyStreamSourceInterface;
 use Drupal\Component\Render\PlainTextOutput;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -37,9 +38,9 @@ use Symfony\Component\Mime\MimeTypes;
  *   allowed_field_types = {"string"},
  *   default_thumbnail_filename = "bunny.png",
  *   providers = {},
- * )
+ * )º
  */
-class BunnyStream extends MediaSourceBase {
+class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface {
 
   use MessengerTrait;
   use LoggerChannelTrait;
@@ -344,7 +345,7 @@ class BunnyStream extends MediaSourceBase {
     $source_field = $this->getSourceFieldDefinition($type)->getName();
 
     $display->setComponent($source_field, [
-      'type' => 'text_textfield',
+      'type' => 'bunny_stream_textfield',
       'weight' => $display->getComponent($source_field)['weight'],
     ]);
     $display->removeComponent('name');
@@ -363,7 +364,10 @@ class BunnyStream extends MediaSourceBase {
   }
 
   /**
+   * Loads the library from the current configuration.
+   *
    * @return \Drupal\Core\Config\Entity\ConfigEntityInterface|null
+   *   The library.
    */
   public function getLibrary() {
     if (!isset($this->library)) {
@@ -378,17 +382,12 @@ class BunnyStream extends MediaSourceBase {
    * If the thumbnail is not already locally stored, this method will attempt
    * to download it.
    *
-   * @param \Drupal\media\OEmbed\Resource $resource
-   *   The oEmbed resource.
+   * @param string $remote_thumbnail_url
+   *   The url of the thumbnail.
    *
    * @return string|null
    *   The local thumbnail URI, or NULL if it could not be downloaded, or if the
    *   resource has no thumbnail at all.
-   *
-   * @todo Determine whether or not oEmbed media thumbnails should be stored
-   * locally at all, and if so, whether that functionality should be
-   * toggle-able. See https://www.drupal.org/project/drupal/issues/2962751 for
-   * more information.
    */
   protected function getLocalThumbnailUri(string $remote_thumbnail_url) {
 
