@@ -2,13 +2,13 @@
 
 namespace Drupal\bunny_stream\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\bunny_stream\BunnyStreamSourceInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\media\Entity\MediaType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -129,6 +129,18 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
       $element[$delta] = $render;
     }
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function isApplicable(FieldDefinitionInterface $field_definition) {
+    $target_bundle = $field_definition->getTargetBundle();
+
+    if (!parent::isApplicable($field_definition) || $field_definition->getTargetEntityTypeId() !== 'media' || !$target_bundle) {
+      return FALSE;
+    }
+    return MediaType::load($target_bundle)->getSource() instanceof BunnyStreamSourceInterface;
   }
 
 }
