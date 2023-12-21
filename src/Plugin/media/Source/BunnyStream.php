@@ -22,6 +22,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\media\MediaSourceBase;
 use Drupal\media\MediaInterface;
+use Drupal\media\MediaSourceFieldConstraintsInterface;
 use Drupal\media\MediaTypeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\TransferException;
@@ -42,7 +43,7 @@ use Symfony\Component\Mime\MimeTypes;
  *   providers = {},
  * )º
  */
-class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface {
+class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface, MediaSourceFieldConstraintsInterface {
 
   protected CONST DEFAULT_THUMBNAIL = 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
 
@@ -172,6 +173,10 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
       $videoManager = $this->bunnyFactory->getVideoManager($this->getConfiguration()['library']);
       /** @var \Drupal\bunny_stream\BunnyVideo $video */
       $video = $videoManager->getVideo($video_id);
+
+      if (is_null($video)) {
+        return NULL;
+      }
     }
     catch (\Exception $e) {
       $this->messenger()->addError($e->getMessage());
@@ -341,6 +346,16 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
       ]));
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSourceFieldConstraints() {
+    return [
+      'bunny_stream' => [],
+    ];
+  }
+
 
   /**
    * {@inheritdoc}
