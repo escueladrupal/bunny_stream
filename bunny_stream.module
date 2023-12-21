@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\bunny_stream\Form\BunnyStreamMediaLibraryForm;
+
 /**
  * Implements hook_theme().
  */
@@ -13,5 +15,13 @@ function bunny_stream_theme($existing, $type, $theme, $path) {
       ],
     ],
   ];
+}
 
+/**
+ * Implements hook_media_source_info_alter().
+ */
+function bunny_stream_media_source_info_alter(array &$sources) {
+  if (empty($sources['bunny_stream']['forms']['media_library_add'])) {
+    $sources['bunny_stream']['forms']['media_library_add'] = BunnyStreamMediaLibraryForm::class;
+  }
 }
