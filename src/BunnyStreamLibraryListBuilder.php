@@ -16,7 +16,6 @@ final class BunnyStreamLibraryListBuilder extends ConfigEntityListBuilder {
   public function buildHeader(): array {
     $header['label'] = $this->t('Label');
     $header['id'] = $this->t('Library ID');
-    $header['status'] = $this->t('Status');
     return $header + parent::buildHeader();
   }
 
@@ -27,7 +26,6 @@ final class BunnyStreamLibraryListBuilder extends ConfigEntityListBuilder {
     /** @var \Drupal\bunny_stream\BunnyStreamLibraryInterface $entity */
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
-    $row['status'] = $entity->status() ? $this->t('Enabled') : $this->t('Disabled');
     return $row + parent::buildRow($entity);
   }
 
