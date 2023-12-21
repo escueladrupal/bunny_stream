@@ -10,5 +10,3 @@ entity.bunny_stream_library.overview:
   parent: bunny_stream.bunny_stream_settings
   description: 'List of Bunny stream libraries to extend site functionality.'
   route_name: entity.bunny_stream_library.collection
-
-
