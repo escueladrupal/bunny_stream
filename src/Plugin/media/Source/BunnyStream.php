@@ -17,6 +17,8 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelTrait;
 use Drupal\Core\Messenger\MessengerTrait;
+use Drupal\Core\StreamWrapper\StreamWrapperInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\media\MediaSourceBase;
 use Drupal\media\MediaInterface;
@@ -70,6 +72,8 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
    *   The file_system service.
    * @param \Drupal\Core\Utility\Token $token
    *   The token service.
+   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $streamWrapperManager
+   *   The stream_wrapper_manager service.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request.
    * @param \Drupal\bunny_stream\BunnyStreamManagerFactoryInterface $bunnyFactory
@@ -86,6 +90,7 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
     protected ClientInterface $httpClient,
     protected FileSystemInterface $fileSystem,
     protected Token $token,
+    protected StreamWrapperManagerInterface $streamWrapperManager,
     protected Request $request,
     protected BunnyStreamManagerFactoryInterface $bunnyFactory
   ) {
@@ -107,6 +112,7 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
       $container->get('http_client'),
       $container->get('file_system'),
       $container->get('token'),
+      $container->get('stream_wrapper_manager'),
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('bunny_stream.manager')
     );
@@ -291,6 +297,14 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
 
     $configuration = $this->getConfiguration();
 
+    $form['thumbnails_directory'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Thumbnails location'),
+      '#default_value' => $configuration['thumbnails_directory'],
+      '#description' => $this->t('Thumbnails will be fetched from the provider for local usage. This is the URI of the directory where they will be placed.'),
+      '#required' => TRUE,
+    ];
+
     $form['library'] = [
       '#type' => 'select',
       '#title' => $this->t('Bunny library'),
@@ -316,6 +330,14 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
         '@library' => $library,
       ]));
     }
+
+    $thumbnails_directory = $form_state->getValue('thumbnails_directory');
+
+    if (!$this->streamWrapperManager->isValidUri($thumbnails_directory)) {
+      $form_state->setErrorByName('thumbnails_directory', $this->t('@path is not a valid path.', [
+        '@path' => $thumbnails_directory,
+      ]));
+    }
   }
 
   /**
@@ -323,6 +345,7 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
    */
   public function defaultConfiguration() {
     return parent::defaultConfiguration() + [
+      'thumbnails_directory' => 'public://bunny_stream_thumbnails/[date:custom:Y-m]',
       'library' => [],
     ];
   }
@@ -395,7 +418,8 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
       return NULL;
     }
 
-    $directory = 'public://bunny_stream_thumbnails/[date:custom:Y-m]';
+    $configuration = $this->getConfiguration();
+    $directory = $configuration['thumbnails_directory'];
     $directory = $this->token->replace($directory);
     $directory = PlainTextOutput::renderFromHtml($directory);
 
