@@ -8,4 +8,5 @@ bunny_stream.bunny_stream_settings:
   title: Bunny stream settings
   parent: system.admin_config_services
   route_name: bunny_stream.bunny_stream_settings
+  description: 'Configuration for Bunny.net stream service.'
   weight: 10
