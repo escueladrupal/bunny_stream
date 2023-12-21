@@ -25,65 +25,7 @@ class VideoManager {
    */
   public CONST GET = "/library/{libraryId}/videos/{videoId}";
 
-  /**
-   * Update video, POST.
-   */
-  public CONST UPDATE = "/library/{libraryId}/videos/{videoId}";
-
-  /**
-   * Delete Video, DELETE.
-   */
-  public CONST DELETE = "/library/{libraryId}/videos/{videoId}";
-
-  /**
-   * Upload video, PUT.
-   */
-  public CONST UPLOAD = "/library/{libraryId}/videos/{videoId}";
-
-  /**
-   * Get video heatmap, GET.
-   */
-  public CONST HEATMAP = "/library/{libraryId}/videos/{videoId}/heatmap";
-
-  /**
-   * Get video statistics, GET.
-   */
-  public CONST STATISTICS = "/library/{libraryId}/statistics";
-
-  /**
-   * Reencode one video, POST.
-   */
-  public CONST REENCODE = "/library/{libraryId}/videos/{videoId}/reencode";
-
-  /**
-   * List videos of the library, GET.
-   */
-  public CONST LIST = "/library/{libraryId}/videos";
-
-  /**
-   * Create new video on the library, POST.
-   */
-  public CONST CREATE = "/library/{libraryId}/videos";
-
-  /**
-   * Set thumbail of video, POST.
-   */
-  public CONST THUMBNAIL = "/library/{libraryId}/videos/{videoId}/thumbnail";
-
-  /**
-   * Fetch video, POST.
-   */
-  public CONST FETCH = "/library/{libraryId}/videos/fetch";
-
-  /*
-   * Add caption to video, POST.
-   */
-  public CONST CAPTION = "/library/{libraryId}/videos/{videoId}/captions/{srclang}";
-
-  /**
-   * Delete caption from video, DELETE.
-   */
-  public CONST DELETE_CAPTION = "/library/{libraryId}/videos/{videoId}/captions/{srclang}";
+  protected Serializer $serializer;
 
   /**
    * Constructor of the class.
@@ -99,7 +41,10 @@ class VideoManager {
   ) {}
 
   /**
+   * Loads video information from bunny.net API.
+   *
    * @param string $video_id
+   *   The video to load.
    *
    * @return ?\Drupal\bunny_stream\BunnyVideo
    *   Loaded video.
@@ -114,13 +59,8 @@ class VideoManager {
 
         $body = $response->getBody();
 
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-
-        $serializer = new Serializer($normalizers, $encoders);
-
         /** @var \Drupal\bunny_stream\BunnyVideo $bunnyVideo */
-        $bunnyVideo = $serializer->deserialize($body, BunnyVideo::class ,'json');
+        $bunnyVideo = $this->getSerializer()->deserialize($body, BunnyVideo::class ,'json');
 
         return $bunnyVideo;
       }
@@ -170,6 +110,24 @@ class VideoManager {
       $url,
       $values
     );
+  }
+
+  /**
+   * Loads the serializer for the class.
+   *
+   * @return \Symfony\Component\Serializer\Serializer
+   *   The serializer for the class.
+   */
+  protected function getSerializer() {
+
+    if (!$this->serializer) {
+      $encoders = [new JsonEncoder()];
+      $normalizers = [new ObjectNormalizer()];
+
+      $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
+    return $this->serializer;
   }
 
 }
