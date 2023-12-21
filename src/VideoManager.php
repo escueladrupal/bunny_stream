@@ -120,7 +120,7 @@ class VideoManager {
    */
   protected function getSerializer() {
 
-    if (!$this->serializer) {
+    if (!isset($this->serializer)) {
       $encoders = [new JsonEncoder()];
       $normalizers = [new ObjectNormalizer()];
 
