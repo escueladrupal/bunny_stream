@@ -37,7 +37,7 @@ bunny_stream.bunny_stream_library.*:
       constraints:
         PrimitiveType: []
 
-field.formatter.settings.bunny_stream_bunny_stream:
+field.formatter.settings.bunny_stream_embed:
   type: mapping
   label: Bunny Stream formatter settings
   mapping:
