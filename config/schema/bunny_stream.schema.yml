@@ -3,32 +3,41 @@ bunny_stream.bunny_stream_library.*:
   label: Bunny Stream Library
   mapping:
     id:
-      type: string
+      type: machine_name
       label: Library ID
-    uuid:
-      type: string
     label:
       type: label
       label: Label
     description:
-      type: string
+      type: text
+      label: 'Description'
     api_key:
       type: string
       label: Api Key
+      constraints:
+        Uuid:
+          versions: 4
     cdn_hostname:
       type: string
       label: CDN Hostname
+      constraints:
+        NotBlank: []
     pull_zone:
-      type: string
+      type: label
       label: Pull Zone
     token_authentication_key:
       type: string
       label: Token Authentication Key
+      constraints:
+        Uuid:
+          versions: 4
     time:
-      type: int
+      type: integer
       label: Time
+      constraints:
+        PrimitiveType: []
 
-field.formatter.settings.bunny_stream_bunny_stream:
+field.formatter.settings.bunny_stream_embed:
   type: mapping
   label: Bunny Stream formatter settings
   mapping:
