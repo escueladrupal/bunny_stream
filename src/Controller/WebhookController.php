@@ -46,8 +46,6 @@ class WebhookController extends ControllerBase {
     $event = new WebhookEvent($post);
     $this->eventDispatcher->dispatch($event, WebhookEvent::WEBHOOK);
 
-    $states = WebhookStates::STATES;
-
     return new Response();
   }
 
