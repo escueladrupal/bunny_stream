@@ -30,3 +30,21 @@ entity.bunny_stream_library.delete_form:
     _title: 'Delete a Bunny stream library'
   requirements:
     _permission: 'administer bunny_stream_library'
+
+bunny_stream.webhook:
+  path: '/bunny-stream/webhook/{hash}'
+  defaults:
+    _controller: '\Drupal\bunny_stream\Controller\WebhookController::webhook'
+  methods: ['POST']
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE
+
+bunny_stream.bunny_stream_settings:
+  path: '/admin/config/system/bunny-stream-settings'
+  defaults:
+    _title: 'Bunny stream settings'
+    _form: 'Drupal\bunny_stream\Form\BunnyStreamSettingsForm'
+  requirements:
+    _permission: 'administer bunny_stream_library'
