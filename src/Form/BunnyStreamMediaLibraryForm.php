@@ -131,7 +131,7 @@ class BunnyStreamMediaLibraryForm extends AddFormBase {
   public function validateVideo(array &$form, FormStateInterface $form_state) {
     $video_id = $form_state->getValue('id');
 
-    /** @var \Drupal\bunny_stream\Plugin\media\Source\BunnyStream $source */
+    /** @var \Drupal\bunny_stream\Plugin\media\Source\BunnyStreamSource $source */
     $source = $this->getMediaType($form_state)->getSource();
 
     /** @var \Drupal\bunny_stream\BunnyStreamLibraryInterface $library */

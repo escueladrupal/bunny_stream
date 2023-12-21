@@ -178,7 +178,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
     /** @var \Drupal\media\Entity\MediaType $media_entity */
     $media_entity = $this->entityTypeManager->getStorage('media_type')->load($bundle);
 
-    /** @var \Drupal\bunny_stream\Plugin\media\Source\BunnyStream $source */
+    /** @var \Drupal\bunny_stream\Plugin\media\Source\BunnyStreamSource $source */
     $source = $media_entity->getSource();
     /** @var \Drupal\bunny_stream\Entity\BunnyStreamLibrary $library */
     $library = $source->getLibrary();

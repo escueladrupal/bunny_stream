@@ -38,7 +38,7 @@ class LazyEmbedLoader implements TrustedCallbackInterface {
   /**
    * {@inheritDoc}
    */
-  public static function trustedCallbacks() {
+  public static function trustedCallbacks(): array {
     return [
       'lazyLoad',
     ];

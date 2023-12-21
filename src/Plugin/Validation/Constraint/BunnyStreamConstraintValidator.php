@@ -3,7 +3,7 @@
 namespace Drupal\bunny_stream\Plugin\Validation\Constraint;
 
 use Drupal\bunny_stream\BunnyStreamManagerFactoryInterface;
-use Drupal\bunny_stream\Plugin\media\Source\BunnyStream;
+use Drupal\bunny_stream\Plugin\media\Source\BunnyStreamSource;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
@@ -50,8 +50,8 @@ class BunnyStreamConstraintValidator extends ConstraintValidator implements Cont
     /** @var \Drupal\media\MediaInterface $media */
     $media = $value->getEntity();
     $source = $media->getSource();
-    if (!($source instanceof BunnyStream)) {
-      throw new \LogicException('Media source must implement ' . BunnyStream::class);
+    if (!($source instanceof BunnyStreamSource)) {
+      throw new \LogicException('Media source must implement ' . BunnyStreamSource::class);
     }
 
     $id = $source->getSourceFieldValue($media);
