@@ -5,6 +5,8 @@ namespace Drupal\bunny_stream\Form;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,9 +19,12 @@ final class BunnyStreamLibraryForm extends EntityForm {
    *
    * @param \Drupal\Core\Datetime\DateFormatterInterface $dateFormatter
    *   The date.formatter service.
+   * @param \GuzzleHttp\Client $client
+   *   The http_client service.
    */
   public function __construct(
-    protected DateFormatterInterface $dateFormatter
+    protected DateFormatterInterface $dateFormatter,
+    protected Client $client
   ) {}
 
   /**
@@ -27,7 +32,8 @@ final class BunnyStreamLibraryForm extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('http_client')
     );
   }
 
@@ -114,6 +120,37 @@ final class BunnyStreamLibraryForm extends EntityForm {
     ];
 
     return $form;
+  }
+
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    $library_id = $form_state->getValue('id');
+    $api_key = $form_state->getValue('api_key');
+
+    $error_message = $this->t('Please, check if API Key @api_key and library ID @library_id exists and are valid.',
+      [
+        '@api_key' => $api_key,
+        '@library_id' => $library_id,
+      ]
+    );
+
+    try {
+      $response = $this->client->request('GET', 'https://video.bunnycdn.com/library/' . $library_id . '/videos', [
+        'headers' => [
+          'AccessKey' => $api_key,
+          'accept' => 'application/json',
+        ],
+      ]);
+
+      if ($response->getStatusCode() !== 200) {
+        $form_state->setError($form, $error_message);
+      }
+    }
+    catch (GuzzleException $exception) {
+      $form_state->setError($form, $error_message);
+    }
+
   }
 
   /**
