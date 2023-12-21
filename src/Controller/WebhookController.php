@@ -3,7 +3,6 @@
 namespace Drupal\bunny_stream\Controller;
 
 use Drupal\bunny_stream\Event\WebhookEvent;
-use Drupal\bunny_stream\WebhookStates;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
