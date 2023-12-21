@@ -112,9 +112,12 @@ final class BunnyStreamLibraryForm extends EntityForm {
       '#description' => $this->t('Chose the time to expire the video, this value will be used only if token authentication is enabled.'),
       '#default_value' => $this->entity->get('time') ?? 43200,
       '#options' => array_map([$this->dateFormatter, 'formatInterval'], array_combine($options, $options)),
-      '#state' => [
-        'invisible' => [
-          ':input[name="token_authentication_key"]' => ['empty' => TRUE],
+      '#states' => [
+        'visible' => [
+          ':input[name="token_authentication_key"]' => ['filled' => TRUE],
+        ],
+        'required' => [
+          ':input[name="token_authentication_key"]' => ['filled' => TRUE],
         ]
       ],
     ];
