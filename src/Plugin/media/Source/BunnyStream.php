@@ -44,6 +44,8 @@ use Symfony\Component\Mime\MimeTypes;
  */
 class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface {
 
+  protected CONST DEFAULT_THUMBNAIL = 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
+
   use MessengerTrait;
   use LoggerChannelTrait;
 
@@ -459,13 +461,13 @@ class BunnyStream extends MediaSourceBase implements BunnyStreamSourceInterface 
       $this->getLogger('bunny_stream')->warning('Failed to download remote thumbnail file due to "%error".', [
         '%error' => $e->getMessage(),
       ]);
-      return 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
+      return self::DEFAULT_THUMBNAIL;
     }
     catch (FileException $e) {
       $this->getLogger('bunny_stream')->warning('Could not download remote thumbnail from {url}.', [
         'url' => $remote_thumbnail_url,
       ]);
-      return 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
+      return self::DEFAULT_THUMBNAIL;
     }
     return NULL;
   }
