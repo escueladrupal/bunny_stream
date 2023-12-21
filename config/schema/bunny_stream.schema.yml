@@ -59,3 +59,12 @@ field.formatter.settings.bunny_stream_embed:
     allowfullscreen:
       type: bool
       label: Allow fullscreen
+
+# Schema for the configuration files of the Bunny Stream module.
+bunny_stream.settings:
+  type: config_object
+  label: 'Bunny Stream settings'
+  mapping:
+    example:
+      type: string
+      label: 'Example'
