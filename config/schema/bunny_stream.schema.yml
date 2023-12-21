@@ -31,3 +31,22 @@ bunny_stream.bunny_stream_library.*:
 field.formatter.settings.bunny_stream_bunny_stream:
   type: mapping
   label: Bunny Stream formatter settings
+  mapping:
+    responsive:
+      type: bool
+      label: Responsive
+    autoplay:
+      type: bool
+      label: Autoplay
+    preload:
+      type: bool
+      label: Preload
+    loop:
+      type: bool
+      label: Loop
+    muted:
+      type: bool
+      label: Muted
+    allowfullscreen:
+      type: bool
+      label: Allow fullscreen
