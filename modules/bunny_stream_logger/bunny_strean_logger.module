@@ -3,9 +3,9 @@
 /**
  * Implements hook_cron().
  *
- * Controls the size of the log table, paring it to 'dblog_row_limit' messages.
+ * Controls the size of the log table.
  */
-function dblog_cron() {
+function bunny_stream_logger_cron() {
   // Cleanup the watchdog table.
   $row_limit = \Drupal::config('bunny_stream_logger.settings')->get('row_limit');
 

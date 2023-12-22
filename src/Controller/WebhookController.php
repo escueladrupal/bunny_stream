@@ -4,12 +4,15 @@ namespace Drupal\bunny_stream\Controller;
 
 use Drupal\bunny_stream\Event\WebhookEvent;
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+/**
+ * Controller for the webhook.
+ */
 class WebhookController extends ControllerBase {
 
   /**
@@ -19,9 +22,17 @@ class WebhookController extends ControllerBase {
    *   The event_dispatcher service.
    */
   public function __construct(
-    #[Autowire(service: 'event_dispatcher')]
     protected EventDispatcherInterface $eventDispatcher
   ) {}
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('event_dispatcher')
+    );
+  }
 
   /**
    * Method to dispatch the event with the payload.

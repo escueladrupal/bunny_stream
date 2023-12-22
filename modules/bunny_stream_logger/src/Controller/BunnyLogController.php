@@ -102,14 +102,14 @@ class BunnyLogController extends ControllerBase {
       ->orderByHeader($header)
       ->execute();
 
-    foreach ($result as $dblog) {
+    foreach ($result as $register) {
 
       $rows[] = [
         'data' => [
-          $this->t(WebhookStates::STATES[$dblog->status]),
-          $this->dateFormatter->format($dblog->timestamp, 'short'),
-          $dblog->video,
-          $dblog->library,
+          $this->t(WebhookStates::STATES[$register->status]),
+          $this->dateFormatter->format($register->timestamp, 'short'),
+          $register->video,
+          $register->library,
         ],
       ];
     }
