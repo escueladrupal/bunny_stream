@@ -28,7 +28,7 @@ class LazyEmbedLoader implements TrustedCallbackInterface {
     return [
       '#theme' => "bunny_embed",
       '#url' => $url,
-      '#options' => ['allowfullscreen' => $fullscreen],
+      '#options' => ['allow_fullscreen' => $fullscreen],
       '#cache' => [
         'max-age' => 0
       ]
