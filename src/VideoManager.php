@@ -32,12 +32,15 @@ class VideoManager {
    *
    * @param \GuzzleHttp\Client $client
    *   The http client to execute the requests.
-   * @param \Drupal\bunny_stream\BunnyStreamLibraryInterface $config
-   *   The library from where load the data to execute the request.
+   * @param int $library_id
+   *   Library ID of Bunny Stream.
+   * @param string $api_key
+   *   API key for the request to bunny.net
    */
   public function __construct(
     protected Client $client,
-    protected BunnyStreamLibraryInterface $config
+    protected int $library_id,
+    protected string $api_key
   ) {}
 
   /**
@@ -50,7 +53,7 @@ class VideoManager {
    *   Loaded video.
    */
   public function getVideo(string $video_id): ?BunnyVideo {
-    $url = $this->generateUrl(self::GET, ["{libraryId}" => $this->config->id(), "{videoId}" => $video_id]);
+    $url = $this->generateUrl(self::GET, ["{libraryId}" => $this->library_id, "{videoId}" => $video_id]);
 
     try {
       $response = $this->executeRequest('GET', $url);
@@ -88,7 +91,7 @@ class VideoManager {
   protected function executeRequest(string $method, string $url, array $options = []): object {
     return $this->client->request($method, self::DOMAIN . $url, [
       'headers' => [
-        'AccessKey' => $this->config->get('api_key'),
+        'AccessKey' => $this->api_key,
         'accept' => 'application/json',
       ],
     ]);

@@ -13,8 +13,9 @@ interface BunnyStreamManagerFactoryInterface {
    * @param string $config_id
    *   The config ID to load.
    *
-   * @return mixed
+   * @return \Drupal\bunny_stream\VideoManager|null
+   *   VideoManager or Null if the library don't exist.
    */
-  public function getVideoManager(string $config_id);
+  public function getVideoManager(string $config_id): ?VideoManager;
 
 }
