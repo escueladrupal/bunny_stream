@@ -79,7 +79,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
         'preload' => 1,
         'loop' => 0,
         'muted' => 0,
-        'allowfullscreen' => 1,
+        'allow_fullscreen' => 1,
       ] + parent::defaultSettings();
   }
 
@@ -248,7 +248,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
         $render = [
           '#theme' => "bunny_embed",
           '#url' => $url->toString(),
-          '#options' => ['allowfullscreen' => $this->getSetting('allow_fullscreen')],
+          '#options' => ['allow_fullscreen' => $this->getSetting('allow_fullscreen')],
         ];
       }
 
