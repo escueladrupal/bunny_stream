@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\bunny_stream\Entity;
 
@@ -92,4 +94,5 @@ final class BunnyStreamLibrary extends ConfigEntityBase implements BunnyStreamLi
    * The time in seconds to expire private videos.
    */
   protected int $time;
+
 }

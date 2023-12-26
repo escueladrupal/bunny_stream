@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\bunny_stream\Form;
 
@@ -32,7 +34,7 @@ final class BunnyStreamSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Webhook hash'),
       '#default_value' => $this->config('bunny_stream.settings')->get('webhook_hash'),
-      '#description' => $this->t('Use this hash for the webhook, if the hash is 1234asdf the webhook endpoint will be "/bunny-stream/webhook/1234asdf".')
+      '#description' => $this->t('Use this hash for the webhook, if the hash is 1234asdf the webhook endpoint will be "/bunny-stream/webhook/1234asdf".'),
     ];
 
     $form['webhook_value'] = [

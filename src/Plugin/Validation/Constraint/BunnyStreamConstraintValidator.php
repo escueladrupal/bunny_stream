@@ -32,7 +32,7 @@ class BunnyStreamConstraintValidator extends ConstraintValidator implements Cont
   /**
    * {@inheritDoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('bunny_stream.manager')
     );
@@ -41,7 +41,7 @@ class BunnyStreamConstraintValidator extends ConstraintValidator implements Cont
   /**
    * {@inheritdoc}
    */
-  public function validate($value, Constraint $constraint) {
+  public function validate(mixed $value, Constraint $constraint): void {
 
     if (!$constraint instanceof BunnyStreamConstraint) {
       throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\EntityExistsConstraint');
@@ -64,11 +64,11 @@ class BunnyStreamConstraintValidator extends ConstraintValidator implements Cont
     /** @var \Drupal\bunny_stream\BunnyStreamLibraryInterface $library */
     $library = $source->getLibrary();
 
-    /** @var \Drupal\bunny_stream\VideoManager $videoManager */
-    $videoManager = $this->bunnyStreamManagerFactory->getVideoManager($library->id());
+    /** @var \Drupal\bunny_stream\VideoManager|null $videoManager */
+    $videoManager = $this->bunnyStreamManagerFactory->getVideoManager((string) $library->id());
 
     try {
-      if (is_null($videoManager->getVideo($id))) {
+      if (is_null($videoManager?->getVideo($id))) {
         $this->context->addViolation($constraint->invalidIdMessage);
       }
     }

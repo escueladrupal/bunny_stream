@@ -27,6 +27,8 @@ class BunnyStreamMediaLibraryForm extends AddFormBase {
    *   The media library UI builder.
    * @param \Drupal\media_library\OpenerResolverInterface $opener_resolver
    *   The opener resolver.
+   * @param \Drupal\bunny_stream\BunnyStreamManagerFactoryInterface $bunnyStreamManagerFactory
+   *   The service bunny_stream.manager.
    */
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
@@ -48,7 +50,6 @@ class BunnyStreamMediaLibraryForm extends AddFormBase {
       $container->get('bunny_stream.manager')
     );
   }
-
 
   /**
    * {@inheritdoc}

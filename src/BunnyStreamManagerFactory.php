@@ -48,7 +48,9 @@ class BunnyStreamManagerFactory implements BunnyStreamManagerFactoryInterface {
    *   The configuration entity.
    */
   private function loadConfig(string $config_id): ?ConfigEntityInterface {
-    return $this->entityTypeManager->getStorage('bunny_stream_library')->load($config_id);
+    /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface|null $entity */
+    $entity = $this->entityTypeManager->getStorage('bunny_stream_library')->load($config_id);
+    return $entity;
   }
 
 }

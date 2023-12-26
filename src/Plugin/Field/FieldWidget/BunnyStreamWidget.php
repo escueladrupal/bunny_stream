@@ -42,7 +42,8 @@ class BunnyStreamWidget extends StringTextfieldWidget {
     if (!parent::isApplicable($field_definition) || $field_definition->getTargetEntityTypeId() !== 'media' || !$target_bundle) {
       return FALSE;
     }
-    return MediaType::load($target_bundle)->getSource() instanceof BunnyStreamSourceInterface;
+
+    return MediaType::load($target_bundle)?->getSource() instanceof BunnyStreamSourceInterface;
   }
 
 }

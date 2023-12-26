@@ -4,8 +4,7 @@ description: 'Media integration with the Bunny.net Stream service.'
 package: Media
 core_version_requirement: ^10
 configure: bunny_stream.bunny_stream_settings
-version: '0.1.0'
+version: '0.2.0'
 dependencies:
   - 'drupal:media'
   - 'drupal:big_pipe'
-lifecycle: experimental

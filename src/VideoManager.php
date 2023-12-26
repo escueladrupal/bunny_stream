@@ -11,20 +11,23 @@ use Symfony\Component\Serializer\Serializer;
  * Execute request to Bunny.net API to manage videos.
  *
  * For more information about the API check the documentation:
- * https://docs.bunny.net/reference/api-overview
+ * https://docs.bunny.net/reference/api-overview.
  */
 class VideoManager {
 
   /**
    * Domain of bunny API.
    */
-  public CONST DOMAIN = "https://video.bunnycdn.com";
+  public const DOMAIN = "https://video.bunnycdn.com";
 
   /**
    * Get Video, GET.
    */
-  public CONST GET = "/library/{libraryId}/videos/{videoId}";
+  public const GET = "/library/{libraryId}/videos/{videoId}";
 
+  /**
+   * Serializer for videos.
+   */
   protected Serializer $serializer;
 
   /**
@@ -35,7 +38,7 @@ class VideoManager {
    * @param int $library_id
    *   Library ID of Bunny Stream.
    * @param string $api_key
-   *   API key for the request to bunny.net
+   *   API key for the request to bunny.net.
    */
   public function __construct(
     protected Client $client,
@@ -63,7 +66,7 @@ class VideoManager {
         $body = $response->getBody();
 
         /** @var \Drupal\bunny_stream\BunnyVideo $bunnyVideo */
-        $bunnyVideo = $this->getSerializer()->deserialize($body, BunnyVideo::class ,'json');
+        $bunnyVideo = $this->getSerializer()->deserialize($body, BunnyVideo::class, 'json');
 
         return $bunnyVideo;
       }

@@ -1,11 +1,14 @@
 <?php
 
 /**
- * Implements hook_cron().
- *
- * Controls the size of the log table.
+ * @file
+ * Hooks of the module.
  */
-function bunny_stream_logger_cron() {
+
+/**
+ * Implements hook_cron().
+ */
+function bunny_stream_logger_cron(): void {
   // Cleanup the watchdog table.
   $row_limit = \Drupal::config('bunny_stream_logger.settings')->get('row_limit');
 
@@ -18,7 +21,8 @@ function bunny_stream_logger_cron() {
       ->fields('b', ['bid'])
       ->orderBy('bid', 'DESC')
       ->range($row_limit - 1, 1)
-      ->execute()->fetchField();
+      ->execute()
+      ->fetchField();
 
     // Delete all table entries older than the nth row, if nth row was found.
     if ($min_row) {

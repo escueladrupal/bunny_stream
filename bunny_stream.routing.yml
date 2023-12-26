@@ -44,8 +44,7 @@ bunny_stream.webhook:
     _controller: '\Drupal\bunny_stream\Controller\WebhookController::webhook'
   methods: ['POST']
   requirements:
+    #This endpoint is for webhooks of bunny secured with hash.
     _access: 'TRUE'
   options:
     no_cache: TRUE
-
-
