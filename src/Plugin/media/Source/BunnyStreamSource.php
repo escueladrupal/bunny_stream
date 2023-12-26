@@ -19,8 +19,8 @@ use Drupal\Core\Logger\LoggerChannelTrait;
 use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\Utility\Token;
-use Drupal\media\MediaSourceBase;
 use Drupal\media\MediaInterface;
+use Drupal\media\MediaSourceBase;
 use Drupal\media\MediaSourceFieldConstraintsInterface;
 use Drupal\media\MediaTypeInterface;
 use GuzzleHttp\ClientInterface;
@@ -40,15 +40,18 @@ use Symfony\Component\Mime\MimeTypes;
  *   allowed_field_types = {"string"},
  *   default_thumbnail_filename = "bunny.png",
  *   providers = {},
- * )º
+ * )
  */
 class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInterface, MediaSourceFieldConstraintsInterface {
 
-  protected CONST DEFAULT_THUMBNAIL = 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
+  protected const DEFAULT_THUMBNAIL = 'public://bunny_stream_thumbnails/bunny-thumbnail.png';
 
   use MessengerTrait;
   use LoggerChannelTrait;
 
+  /**
+   * Bunny library that store the configuration.
+   */
   protected ?ConfigEntityInterface $library;
 
   /**
@@ -170,7 +173,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
     try {
       /** @var \Drupal\bunny_stream\VideoManager $videoManager */
       $videoManager = $this->bunnyFactory->getVideoManager($this->getConfiguration()['library']);
-      /** @var \Drupal\bunny_stream\BunnyVideo $video */
+      /** @var \Drupal\bunny_stream\BunnyVideo|null $video */
       $video = $videoManager->getVideo($video_id);
 
       if (is_null($video)) {
@@ -197,11 +200,12 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
         }
 
         return parent::getMetadata($media, 'default_name');
+
       case 'thumbnail_uri':
 
         $library = $this->getLibrary();
 
-        $thumbnail_uri = $library->get('cdn_hostname') . '/' . $video_id . '/thumbnail.jpg';
+        $thumbnail_uri = $library?->get('cdn_hostname') . '/' . $video_id . '/thumbnail.jpg';
         return $this->getLocalThumbnailUri($thumbnail_uri);
 
       case 'videoLibraryId':
@@ -285,6 +289,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
       default:
         break;
     }
+
     return NULL;
   }
 
@@ -317,7 +322,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
       '#options' => $config_list,
       '#default_value' => $configuration['library'],
       '#description' => $this->t('Select the library to use for this Media Type, if you dont have a library configured in your site, you can <a href="@url">create one</a>.', [
-        '@url' => '/admin/structure/bunny-stream-library'
+        '@url' => '/admin/structure/bunny-stream-library',
       ]),
       '#required' => TRUE,
     ];
@@ -328,7 +333,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
     $library = $form_state->getValue('library');
 
     if (!$this->entityTypeManager->getStorage('bunny_stream_library')->load($library)) {
@@ -355,7 +360,6 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
     ];
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -369,7 +373,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
   /**
    * {@inheritdoc}
    */
-  public function prepareViewDisplay(MediaTypeInterface $type, EntityViewDisplayInterface $display) {
+  public function prepareViewDisplay(MediaTypeInterface $type, EntityViewDisplayInterface $display): void {
     $display->setComponent($this->getSourceFieldDefinition($type)->getName(), [
       'type' => 'bunny_stream_embed',
       'label' => 'visually_hidden',
@@ -379,7 +383,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
   /**
    * {@inheritdoc}
    */
-  public function prepareFormDisplay(MediaTypeInterface $type, EntityFormDisplayInterface $display) {
+  public function prepareFormDisplay(MediaTypeInterface $type, EntityFormDisplayInterface $display): void {
     parent::prepareFormDisplay($type, $display);
     $source_field = $this->getSourceFieldDefinition($type)->getName();
 
@@ -408,7 +412,7 @@ class BunnyStreamSource extends MediaSourceBase implements BunnyStreamSourceInte
    * @return \Drupal\Core\Config\Entity\ConfigEntityInterface|null
    *   The library.
    */
-  public function getLibrary() {
+  public function getLibrary(): ?ConfigEntityInterface {
     if (!isset($this->library)) {
       $this->library = $this->entityTypeManager->getStorage('bunny_stream_library')->load($this->getConfiguration()['library']);
     }

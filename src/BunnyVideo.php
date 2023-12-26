@@ -22,7 +22,7 @@ class BunnyVideo {
   public string $guid;
 
   /**
-   * Video title
+   * Video title.
    *
    * @var string
    */

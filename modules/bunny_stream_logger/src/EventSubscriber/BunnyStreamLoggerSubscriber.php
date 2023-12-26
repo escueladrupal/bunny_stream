@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\bunny_stream_logger\EventSubscriber;
 
@@ -7,15 +9,27 @@ use Drupal\Core\Database\Connection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * @todo Add description for this subscriber.
+ * Listen the event to insert in the db the evento from webhook.
  */
 final class BunnyStreamLoggerSubscriber implements EventSubscriberInterface {
 
+  /**
+   * Constructor for the event subscriber.
+   *
+   * @param \Drupal\Core\Database\Connection $database
+   *   The 'database¡ service.
+   */
   public function __construct(
     protected Connection $database
   ) {}
 
-  public function onWebhook(WebhookEvent $event) {
+  /**
+   * Inser in the databaser the webhook information.
+   *
+   * @param \Drupal\bunny_stream\Event\WebhookEvent $event
+   *   Event with the information from webhook.
+   */
+  public function onWebhook(WebhookEvent $event): void {
     $payload = $event->getPayload();
 
     $this->database
@@ -28,6 +42,7 @@ final class BunnyStreamLoggerSubscriber implements EventSubscriberInterface {
       ])
       ->execute();
   }
+
   /**
    * {@inheritdoc}
    */

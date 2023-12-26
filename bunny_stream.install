@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Hooks for install and uninstall.
+ */
+
 use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Implements hook_install().
  */
-function bunny_stream_install($is_syncing) {
+function bunny_stream_install($is_syncing): void {
 
   $path = \Drupal::service('extension.list.module')->getPath('bunny_stream') . '/images/icon/bunny.png';
 

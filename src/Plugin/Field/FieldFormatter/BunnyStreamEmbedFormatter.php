@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\bunny_stream\Plugin\Field\FieldFormatter;
 
@@ -30,25 +32,30 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
    * Constructor for the plugin.
    *
    * @param string $plugin_id
-   *    The plugin_id for the formatter.
+   *   The plugin_id for the formatter.
    * @param mixed $plugin_definition
-   *    The plugin implementation definition.
+   *   The plugin implementation definition.
    * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
-   *    The definition of the field to which the formatter is associated.
+   *   The definition of the field to which the formatter is associated.
    * @param array $settings
-   *    The formatter settings.
+   *   The formatter settings.
    * @param string $label
-   *    The formatter label display setting.
+   *   The formatter label display setting.
    * @param string $view_mode
-   *    The view mode.
+   *   The view mode.
    * @param array $third_party_settings
-   *    Any third party settings.
+   *   Any third party settings.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity_type.manager service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings,
+  public function __construct($plugin_id,
+  $plugin_definition,
+  FieldDefinitionInterface $field_definition,
+  array $settings,
+  $label,
+  $view_mode,
+  array $third_party_settings,
     protected EntityTypeManagerInterface $entityTypeManager
-
   ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
   }
@@ -74,13 +81,13 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
    */
   public static function defaultSettings() {
     return [
-        'responsive' => 1,
-        'autoplay' => 0,
-        'preload' => 1,
-        'loop' => 0,
-        'muted' => 0,
-        'allow_fullscreen' => 1,
-      ] + parent::defaultSettings();
+      'responsive' => 1,
+      'autoplay' => 0,
+      'preload' => 1,
+      'loop' => 0,
+      'muted' => 0,
+      'allow_fullscreen' => 1,
+    ] + parent::defaultSettings();
   }
 
   /**
@@ -219,7 +226,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
 
       if (!empty($token_auth)) {
         $time = time() + $library->get('time');
-        $security_token = hash("sha256",$token_auth . $video_id . $time);
+        $security_token = hash("sha256", $token_auth . $video_id . $time);
 
         $settings['token'] = $security_token;
         $settings['expires'] = $time;
@@ -234,7 +241,7 @@ class BunnyStreamEmbedFormatter extends FormatterBase {
             [
               $url->toString(),
               $this->getSetting('allow_fullscreen'),
-            ]
+            ],
           ],
           '#create_placeholder' => TRUE,
           '#lazy_builder_preview' => [

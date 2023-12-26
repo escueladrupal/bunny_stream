@@ -1,9 +1,14 @@
 <?php
 
 /**
+ * @file
+ * Hooks for install and uninstall.
+ */
+
+/**
  * Implements hook_schema().
  */
-function bunny_stream_logger_schema() {
+function bunny_stream_logger_schema(): array {
   $schema['bunny_stream_logger'] = [
     'description' => 'Table that contains logs of all bunny stream webhooks.',
     'fields' => [

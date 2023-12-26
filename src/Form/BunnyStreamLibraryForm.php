@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types = 1);
 
 namespace Drupal\bunny_stream\Form;
 
@@ -10,9 +12,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * bunny_stream_library form.
+ * Bunny_stream_library form.
  */
 final class BunnyStreamLibraryForm extends EntityForm {
+
+  /**
+   * The entity being used by this form.
+   *
+   * @var \Drupal\Core\Entity\ContentEntityInterface
+   */
+  protected $entity;
 
   /**
    * Constructor of the class to inject services.
@@ -30,7 +39,7 @@ final class BunnyStreamLibraryForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('date.formatter'),
       $container->get('http_client')
@@ -118,14 +127,17 @@ final class BunnyStreamLibraryForm extends EntityForm {
         ],
         'required' => [
           ':input[name="token_authentication_key"]' => ['filled' => TRUE],
-        ]
+        ],
       ],
     ];
 
     return $form;
   }
 
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  /**
+   * {@inheritDoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     parent::validateForm($form, $form_state);
 
     $library_id = $form_state->getValue('id');
@@ -147,11 +159,11 @@ final class BunnyStreamLibraryForm extends EntityForm {
       ]);
 
       if ($response->getStatusCode() !== 200) {
-        $form_state->setError($form, $error_message);
+        $form_state->setError($form, (string) $error_message);
       }
     }
     catch (GuzzleException $exception) {
-      $form_state->setError($form, $error_message);
+      $form_state->setError($form, (string) $error_message);
     }
 
   }

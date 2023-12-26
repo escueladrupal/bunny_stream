@@ -74,4 +74,3 @@ $ composer require symfony/property-access
 Current maintainers:
 
 * Borja Vicente - https://www.drupal.org/u/nireneko
-

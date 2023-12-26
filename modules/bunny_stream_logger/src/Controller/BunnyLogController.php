@@ -19,7 +19,7 @@ class BunnyLogController extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('database'),
       $container->get('date.formatter')
@@ -75,6 +75,7 @@ class BunnyLogController extends ControllerBase {
       ],
     ];
 
+    /** @var \Drupal\Core\Database\Query\SelectInterface $query */
     $query = $this->database->select('bunny_stream_logger', 'b')
       ->extend(PagerSelectExtender::class)
       ->extend(TableSortExtender::class);
@@ -103,10 +104,10 @@ class BunnyLogController extends ControllerBase {
       ->execute();
 
     foreach ($result as $register) {
-
+      $status = (string) WebhookStates::STATES[$register->status];
       $rows[] = [
         'data' => [
-          $this->t(WebhookStates::STATES[$register->status]),
+          $this->t($status),
           $this->dateFormatter->format($register->timestamp, 'short'),
           $register->video,
           $register->library,
@@ -120,10 +121,10 @@ class BunnyLogController extends ControllerBase {
       '#rows' => $rows,
       '#empty' => $this->t('No log messages available.'),
     ];
+
     $build['bunny_pager'] = ['#type' => 'pager'];
 
     return $build;
-
   }
 
 }
